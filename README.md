@@ -5,3 +5,5 @@
 No need to setup server or keys. I have done everything. 
 
 If you want to see how my server script looks then check in `server/android.php` file.
+
+Complete tutorial on this available at http://qnimate.com/push-notification-in-intel-xdk-using-push-plugin/
