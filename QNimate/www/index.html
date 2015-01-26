@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <style>
+        @-ms-viewport { width: 100vw ; zoom: 100% ; }                           
+        @viewport { width: 100vw ; zoom: 100% ; }
+        @-ms-viewport { user-zoom: fixed ; }                                    
+        @viewport { user-zoom: fixed ; }
+    </style>
+
+    <script src="https://cdn.rawgit.com/ftlabs/fastclick/master/lib/fastclick.js"></script>
+    <link rel="stylesheet" href="css/app.css">
+    
+    
+</head>
+<body>
+    
+    <button onclick="send_notification();">Test Push Notification</button>
+    
+    <script src="intelxdk.js"></script>         
+    <script src="cordova.js"></script>          
+    <script src="xhr.js"></script>              
+
+    <script src="js/app.js"></script>
+    <script src="js/init-app.js"></script>
+    <script src="js/init-dev.js"></script>
+    
+    <script>
+        var tokenID = "";
+
+        function send_notification()
+        {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "http://labs.qnimate.com/ios-push/android.php?token=" + encodeURIComponent(tokenID), false);
+            xhr.send();
+        }
+        
+        document.addEventListener("deviceready", function(){
+            //Unregister the previous token because it might have become invalid. Unregister everytime app is started.
+            window.plugins.pushNotification.unregister(successHandler, errorHandler);
+            
+            if(intel.xdk.device.platform == "Android")
+            {
+                //register the user and get token
+                window.plugins.pushNotification.register(
+                successHandler,
+                errorHandler,
+                {
+                    //senderID is the project ID
+                    "senderID":"960986831315",
+                    //callback function that is executed when phone recieves a notification for this app
+                    "ecb":"onNotification"
+                });
+            } 
+        }, false);
+ 
+        //app given permission to receive and display push messages in Android.
+        function successHandler (result) {
+            alert('result = ' + result);
+        }
+        
+        //app denied permission to receive and display push messages in Android.
+        function errorHandler (error) {
+            alert('error = ' + error);
+        }
+        
+        
+        //fired when token is generated, message is received or an error occured.
+        function onNotification(e) 
+        {
+            switch( e.event )
+            {
+                //app is registered to receive notification
+                case 'registered':
+                    if(e.regid.length > 0)
+                    {
+                        // Your Android push server needs to know the token before it can push to this device
+            // here is where you might want to send the token to your server along with user credentials.
+                        alert('registration id = '+e.regid);
+                        tokenID = e.regid;
+                        
+                    }
+                    break;
+
+                case 'message':
+                  //Do something with the push message. This function is fired when push message is received or if user clicks on the tile.
+                  alert('message = '+e.message+' msgcnt = '+e.msgcnt);
+                break;
+
+                case 'error':
+                  alert('GCM error = '+e.msg);
+                break;
+
+                default:
+                  alert('An unknown GCM event has occurred');
+                  break;
+            }
+        }
+    </script>
+</body> 
+</html>
