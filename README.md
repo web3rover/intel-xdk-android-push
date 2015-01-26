@@ -2,7 +2,7 @@
 
 `QNimate` folder is the Intel XDK Project. Use `Use Existing Project` to import the `QNimate Project`. Then build the app and install the `.apk` file. 
 
-No need to setup server or keys. I have done everything. 
+No need to setup server or keys. I have done everything. Once installed check and device is registered click on `Test Push Notification` button to receive a notfication. You will receive the notification after 5 seconds.
 
 If you want to see how my server script looks then check in `server/android.php` file.
 
